@@ -1,0 +1,25 @@
+---
+- name: Configurar acceso al Azure Container Registry (ACR)
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  roles:
+    - acr_config
+
+- name: Desplegar objetos en AKS (Deployment, Service, etc.)
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  roles:
+    - k8s_deploy
+
+- name: Configurar servidor web en VM con Podman
+  hosts: podman_host
+  become: true
+  gather_facts: true
+  roles:
+    - webserver
+
+  vars_files:
+    - secrets.yml
+   

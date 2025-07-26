@@ -1,0 +1,24 @@
+---
+# Tarea 1: Crear Namespace para la aplicacion
+- name: Crear namespace para la aplicacion
+  kubernetes.core.k8s:
+    state: present
+    definition:
+      apiVersion: v1
+      kind: Namespace
+      metadata:
+        name: "{{ app_namespace }}"
+
+# Tarea 2: Aplicar el secreto desde el manifiesto YAML
+- name: Aplicar secreto de credenciales
+  kubernetes.core.k8s:
+    state: present
+    definition: "{{ lookup('file', 'files/secrets.yaml') }}"
+    namespace: "{{ app_namespace }}"
+
+# Tarea 3: Desplegar aplicacion desde plantilla Jinja2
+- name: Desplegar aplicacion desde plantilla Jinja2
+  kubernetes.core.k8s:
+    state: present
+    definition: "{{ lookup('template', 'templates/app_template.yml.j2') }}"
+    namespace: "{{ app_namespace }}"

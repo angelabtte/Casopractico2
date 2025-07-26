@@ -1,0 +1,24 @@
+---
+# Tarea 1: Instalar Podman usando el módulo apt
+- name: Instalar Podman
+  apt:
+    name: podman
+    state: present
+    update_cache: yes
+
+# Tarea 2: Hacer login contra el ACR usando el módulo podman_login
+- name: Login en el Azure Container Registry (ACR)
+  containers.podman.podman_login:
+    registry: "{{ acr_url }}"
+    username: "{{ acr_username }}"
+    password: "{{ acr_password }}"
+
+# Tarea 3: Ejecutar contenedor Nginx con Podman
+- name: Ejecutar contenedor Nginx con Podman
+  containers.podman.podman_container:
+    name: nginx_web
+    image: "{{ acr_url }}/nginx:latest"
+    state: started
+    restart_policy: always
+    ports:
+      - "80:80"

@@ -1,0 +1,44 @@
+---
+# Nombre de usuario para autenticarse en el Azure Container Registry (ACR)
+acr_username: "<tu_usuario_de_acr>"
+
+# Contrasena o token de acceso para el ACR
+acr_password: "<tu_contraseña_o_token_de_acr>"
+
+# Grupo de recursos donde se encuentra el cluster AKS
+aks_resource_group: "rg-caso-practico"
+
+# Nombre del cluster de Kubernetes en Azure
+aks_cluster_name: "aks-practico2"
+
+# Nombre del Azure Container Registry (ACR)
+acr_name: "acrpractico2demoangiebustamante2025"
+
+# Nombre del NameSpace para la aplicacion en AKS
+app_namespace: "app-casopractico2" 
+
+app:
+  backend:
+    name: backend
+    image: acrpractico2demoangiebustamante2025.azurecr.io/backend:casopractico2
+    replicas: 1
+    port: 6379
+    requests:
+      cpu: "100m"
+      memory: "128Mi"
+    limits:
+      cpu: "250m"
+      memory: "256Mi"
+    pv: redis-data
+
+  frontend:
+    name: frontend
+    image: acrpractico2demoangiebustamante2025.azurecr.io/frontend:casopractico2
+    replicas: 1
+    port: 80
+    requests:
+      cpu: "100m"
+      memory: "128Mi"
+    limits:
+      cpu: "250m"
+      memory: "256Mi"

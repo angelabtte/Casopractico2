@@ -1,0 +1,102 @@
+# Plantilla Jinja2 para desplegar backend y frontend en Kubernetes
+
+# Deployment del backend
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ app.backend.name }}
+  namespace: {{ app_namespace }}
+spec:
+  replicas: {{ app.backend.replicas }}
+  selector:
+    matchLabels:
+      app: {{ app.backend.name }}
+  template:
+    metadata:
+      labels:
+        app: {{ app.backend.name }}
+    spec:
+      containers:
+        - name: {{ app.backend.name }}
+          image: {{ app.backend.image }}
+          ports:
+            - containerPort: {{ app.backend.port }}
+          resources:
+            requests:
+              memory: "{{ app.backend.requests.memory }}"
+              cpu: "{{ app.backend.requests.cpu }}"
+            limits:
+              memory: "{{ app.backend.limits.memory }}"
+              cpu: "{{ app.backend.limits.cpu }}"
+          volumeMounts:
+            - name: {{ app.backend.pv }}
+              mountPath: /data
+      volumes:
+        - name: {{ app.backend.pv }}
+          persistentVolumeClaim:
+            claimName: {{ app.backend.pv }}
+
+---
+
+# Service para el backend
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ app.backend.name }}-svc
+  namespace: {{ app_namespace }}
+spec:
+  selector:
+    app: {{ app.backend.name }}
+  ports:
+    - protocol: TCP
+      port: {{ app.backend.port }}
+      targetPort: {{ app.backend.port }}
+  type: ClusterIP
+
+---
+
+# Deployment del frontend
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ app.frontend.name }}
+  namespace: {{ app_namespace }}
+spec:
+  replicas: {{ app.frontend.replicas }}
+  selector:
+    matchLabels:
+      app: {{ app.frontend.name }}
+  template:
+    metadata:
+      labels:
+        app: {{ app.frontend.name }}
+    spec:
+      containers:
+        - name: {{ app.frontend.name }}
+          image: {{ app.frontend.image }}
+          ports:
+            - containerPort: {{ app.frontend.port }}
+          resources:
+            requests:
+              memory: "{{ app.frontend.requests.memory }}"
+              cpu: "{{ app.frontend.requests.cpu }}"
+            limits:
+              memory: "{{ app.frontend.limits.memory }}"
+              cpu: "{{ app.frontend.limits.cpu }}"
+
+---
+
+# Service para el frontend (tipo LoadBalancer)
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ app.frontend.name }}-svc
+  namespace: {{ app_namespace }}
+spec:
+  selector:
+    app: {{ app.frontend.name }}
+  ports:
+    - protocol: TCP
+      port: {{ app.frontend.port }}
+      targetPort: {{ app.frontend.port }}
+  type: LoadBalancer
