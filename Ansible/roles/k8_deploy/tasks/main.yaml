@@ -13,7 +13,7 @@
 - name: Aplicar secreto de credenciales
   kubernetes.core.k8s:
     state: present
-    definition: "{{ lookup('file', 'files/secrets.yaml') }}"
+    definition: "{{ lookup('file', 'files/k8s_secret.yaml') }}"
     namespace: "{{ app_namespace }}"
 
 # Tarea 3: Desplegar aplicacion desde plantilla Jinja2

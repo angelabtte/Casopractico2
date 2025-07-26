@@ -1,9 +1,7 @@
 ---
 # Nombre de usuario para autenticarse en el Azure Container Registry (ACR)
-acr_username: "<tu_usuario_de_acr>"
-
-# Contrasena o token de acceso para el ACR
-acr_password: "<tu_contraseña_o_token_de_acr>"
+acr_username: "acrpractico2demoangiebustamante2025"
+acr_url: acrpractico2demoangiebustamante2025.azurecr.io
 
 # Grupo de recursos donde se encuentra el cluster AKS
 aks_resource_group: "rg-caso-practico"

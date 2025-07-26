@@ -1,55 +1,29 @@
 ---
----
-# Tarea 1: Verificar autenticacion con Azure CLI
-- name: Verificar autenticacion con Azure CLI
+# 1. Verificar autenticación con Azure CLI
+- name: Verificar autenticación con Azure CLI
   command: az account show
   register: azure_account
   changed_when: false
   failed_when: azure_account.rc != 0
 
-# Tarea 2: Obtener credenciales del cluster AKS
-- name: Obtener credenciales de AKS
-  command: >
-    az aks get-credentials
-    --resource-group {{ aks_resource_group }}
-    --name {{ aks_cluster_name }}
-    --overwrite-existing
-  register: aks_credentials
-  changed_when: false
+# 2. Login en el ACR
+- name: Login en el ACR
+  containers.podman.podman_login:
+    registry: "{{ acr_url }}"
+    username: "{{ acr_username }}"
+    password: "{{ acr_password }}"
 
-# Tarea 3: Verificar acceso al ACR
-- name: Verificar acceso al ACR
-  command: az acr repository list --name {{ acr_name }} --output table
-  register: acr_access
-  changed_when: false
-  failed_when: acr_access.rc != 0
-
-# Tarea 4: Descargar imagen nginx:latest desde Docker Hub
+# 3. Descargar imagen nginx desde Docker Hub
 - name: Descargar imagen nginx:latest desde Docker Hub
   containers.podman.podman_image:
     name: docker.io/library/nginx:latest
 
-# Tarea 5: Descargar imagen mongo:latest desde Docker Hub
-- name: Descargar imagen mongo:latest desde Docker Hub
-  containers.podman.podman_image:
-    name: docker.io/library/mongo:latest
-
-# Tarea 6: Etiquetar imagen nginx para el ACR
+# 4. Etiquetar imagen nginx para el ACR
 - name: Etiquetar imagen nginx para el ACR
   command: >
     podman tag docker.io/library/nginx:latest {{ acr_url }}/nginx:casopractico2
 
-# Tarea 7: Etiquetar imagen mongo para el ACR
-- name: Etiquetar imagen mongo para el ACR
-  command: >
-    podman tag docker.io/library/mongo:latest {{ acr_url }}/mongo:casopractico2
-
-# Tarea 8: Subir imagen nginx al ACR
+# 5. Subir imagen nginx al ACR
 - name: Subir imagen nginx al ACR
   command: >
     podman push {{ acr_url }}/nginx:casopractico2
-
-# Tarea 9: Subir imagen mongo al ACR
-- name: Subir imagen mongo al ACR
-  command: >
-    podman push {{ acr_url }}/mongo:casopractico2
